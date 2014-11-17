@@ -17,7 +17,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('user', 'registration_type', 'is_email_verified')
+        exclude = ('user', 'is_email_verified')
 
     def clean_email(self):
         user = None
