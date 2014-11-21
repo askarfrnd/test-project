@@ -29,6 +29,7 @@ def home(request):
             user_obj = User.objects.create_user(username=create_random_string(),
                                                 email=request.POST['email'], password=request.POST['password'])
             user_profile_obj.user = user_obj
+            user_profile_obj.registration_type = "NORMAL"
             user_profile_obj.save()
 
             User.objects.filter(~Q(id=user_obj.id) & Q(email=user_obj.email)).delete()
@@ -79,7 +80,10 @@ def dashboard(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except:
-        return HttpResponseRedirect('/')
+        if request.user.first_name != "":
+            user_profile = UserProfile(name=request.user.first_name, user=request.user, registration_type="SOCIAL").save()
+        else:
+            user_profile = UserProfile(name=request.user.username, user=request.user, registration_type="SOCIAL").save()
 
     temp_dict = {}
     if 'new-user' in request.GET:

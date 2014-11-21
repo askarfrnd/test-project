@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from demoapp.forms import PasswordResetForm
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -18,3 +19,16 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
+
+urlpatterns += patterns('',
+    url(r'^user/password/reset/$',
+        'django.contrib.auth.views.password_reset',
+        {'post_reset_redirect' : '/user/password/reset/done/','template_name': 'registration/password_reset.html', 'password_reset_form':PasswordResetForm},
+        name="password_reset"),
+    (r'^user/password/reset/done/$',
+        'django.contrib.auth.views.password_reset_done',{'template_name':'registration/password_reset_done.html'}),
+   (r'^user/password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        'django.contrib.auth.views.password_reset_confirm',
+        {'post_reset_redirect' : '/user/password/done/','template_name':'registration/password_reset_confirm.html'}),
+    (r'^user/password/done/$',
+        'django.contrib.auth.views.password_reset_complete', {'template_name':'registration/password_reset_complete.html'}),)

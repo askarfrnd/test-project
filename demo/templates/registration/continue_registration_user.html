@@ -1,0 +1,10 @@
+{% extends 'common_elements/home/base_skeleton.html' %}
+{% block page_title %}User Registration{% endblock %}
+{% block page_content  %}
+
+<form action="" method="post">
+    {% csrf_token %}
+   {{ regular_form.as_p }}
+    <input type="submit" value="Register as Regular user">
+    </form>
+{% endblock %}
