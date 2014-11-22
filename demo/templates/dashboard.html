@@ -4,9 +4,19 @@
     <title></title>
 </head>
 <body>
-{{ welcome_message }}<br><br>
 Welcome {{ user_profile.name }}<br>
 <a href="/logout">Logout</a>
+
+
+{# Messages code below can be moved to base skeleton for design purposes. #}
+{% if messages %}
+        {% for message in messages %}
+          <div class="c-alert alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <p class="text-center">{{ message|safe }}</p>
+          </div>
+        {% endfor %}
+{% endif %}
 
 </body>
 </html>

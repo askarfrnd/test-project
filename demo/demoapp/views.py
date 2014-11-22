@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
+from django.core.mail import send_mail
 
 from .utils import create_random_string
 from .forms import AuthenticationForm, UserRegistrationForm
@@ -34,6 +35,14 @@ def home(request):
 
             User.objects.filter(~Q(id=user_obj.id) & Q(email=user_obj.email)).delete()
             messages.success(request, "Thank you for registering. You may now login.")
+            # Email sending code. Will be using django templated email.
+            try:
+                send_mail('Demo App - Registration', 'Thankyou for registration.', 'askar@demoapp.com',
+                                            [request.POST['email']], fail_silently=False)
+
+            except:
+                pass
+
             user_login = authenticate(username=request.POST['email'], password=request.POST['password'])
             if user_login:
                 login(request, user_login)
@@ -87,7 +96,7 @@ def dashboard(request):
 
     temp_dict = {}
     if 'new-user' in request.GET:
-        temp_dict['welcome_message'] = "Thank you for registering. We assure you a good time ahead."
+        messages.success(request, "Thank you for registering. We assure you a good time ahead.")
     temp_dict['user_profile'] = user_profile
     return render_to_response(
         'dashboard.html',
