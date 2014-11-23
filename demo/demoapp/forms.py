@@ -23,7 +23,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('user', 'registration_type', 'is_email_verified')
+        exclude = ('user', 'is_email_verified')
 
     def clean_email(self):
         user = None
@@ -99,3 +99,9 @@ class PasswordResetForm(forms.Form):
             else:
                 html_email = None
             send_mail(subject, email, from_email, [user.email], html_message=html_email)
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ('user', 'is_email_verified')

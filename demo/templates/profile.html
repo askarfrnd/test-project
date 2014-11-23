@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+{{ user_profile.name }}'s Profile<br>
+<a href="/">Dashboard</a>
+<a href="/logout">Logout</a>
+
+
+ <form action="" method="post"> {% csrf_token %}
+        Name: {{ form.name }}{{ form.name.errors }}<br>
+        <input type="submit" name="Submit" value="Save">
+ </form>
+
+</body>
+</html>

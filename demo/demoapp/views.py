@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 
 from .utils import create_random_string
-from .forms import AuthenticationForm, UserRegistrationForm
+from .forms import AuthenticationForm, UserRegistrationForm, ProfileEditForm
 from .models import UserProfile
 
 
@@ -30,11 +30,11 @@ def home(request):
             user_obj = User.objects.create_user(username=create_random_string(),
                                                 email=request.POST['email'], password=request.POST['password'])
             user_profile_obj.user = user_obj
-            user_profile_obj.registration_type = "NORMAL"
             user_profile_obj.save()
 
             User.objects.filter(~Q(id=user_obj.id) & Q(email=user_obj.email)).delete()
-            messages.success(request, "Thank you for registering. You may now login.")
+
+            # Below task will be made to run in background using celery
             # Email sending code. Will be using django templated email.
             try:
                 send_mail('Demo App - Registration', 'Thankyou for registration.', 'askar@demoapp.com',
@@ -89,10 +89,7 @@ def dashboard(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except:
-        if request.user.first_name != "":
-            user_profile = UserProfile(name=request.user.first_name, user=request.user, registration_type="SOCIAL").save()
-        else:
-            user_profile = UserProfile(name=request.user.username, user=request.user, registration_type="SOCIAL").save()
+        return HttpResponseRedirect('/')
 
     temp_dict = {}
     if 'new-user' in request.GET:
@@ -106,3 +103,29 @@ def dashboard(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+
+def user_profile(request):
+    temp_dict = {}
+    if request.user.is_staff:
+        return HttpResponseRedirect('/admin')
+
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except:
+        return HttpResponseRedirect('/')
+
+    form = ProfileEditForm(instance=user_profile)
+    if request.POST:
+        print "posted"
+        form = ProfileEditForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            user_profile.save()
+
+    temp_dict['form'] = form
+    temp_dict['user_profile'] = user_profile
+    return render_to_response(
+        'profile.html',
+        temp_dict, context_instance=RequestContext(request))
