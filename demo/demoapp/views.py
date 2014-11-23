@@ -7,10 +7,14 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
 from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
 
 from .utils import create_random_string
 from .forms import AuthenticationForm, UserRegistrationForm, ProfileEditForm
 from .models import UserProfile
+from verification.models import EmailVerification
+
+chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 
 def home(request):
@@ -34,10 +38,18 @@ def home(request):
 
             User.objects.filter(~Q(id=user_obj.id) & Q(email=user_obj.email)).delete()
 
+            email_verify_object = EmailVerification()
+            email_verify_object.user = user_profile_obj
+            email_verify_object.email = str(request.POST['email'])
+            email_verify_object.verification_key = get_random_string(20, chars)
+            email_verify_object.save()
+
             # Below task will be made to run in background using celery
-            # Email sending code. Will be using django templated email.
+            # Verification Email sending code. Will be using django templated email.
             try:
-                send_mail('Demo App - Registration', 'Thankyou for registration.', 'askar@demoapp.com',
+                from django.contrib.sites.models import Site
+                site = Site.objects.get_current()
+                send_mail('Demo App - Registration', 'Thankyou for registration. Please click here'+str("http://"+str(site.domain)+"registration/confirm-email/"+email_verify_object.verification_key)+'/', 'askar@demoapp.com',
                                             [request.POST['email']], fail_silently=False)
 
             except:
@@ -46,7 +58,8 @@ def home(request):
             user_login = authenticate(username=request.POST['email'], password=request.POST['password'])
             if user_login:
                 login(request, user_login)
-                return HttpResponseRedirect('/dashboard/?new-user')
+                messages.success(request, "Thank you for registering. We assure you a good time ahead.")
+                return HttpResponseRedirect('/dashboard')
             else:
                 temp_dict['error_message'] = "Invalid Credentials."
     temp_dict['form'] = reg_form
@@ -92,8 +105,6 @@ def dashboard(request):
         return HttpResponseRedirect('/')
 
     temp_dict = {}
-    if 'new-user' in request.GET:
-        messages.success(request, "Thank you for registering. We assure you a good time ahead.")
     temp_dict['user_profile'] = user_profile
     return render_to_response(
         'dashboard.html',

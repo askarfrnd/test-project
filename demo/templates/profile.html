@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Profile - {{ user_profile.name }}</title>
 </head>
 <body>
 {{ user_profile.name }}'s Profile<br>
@@ -13,6 +13,8 @@
         Name: {{ form.name }}{{ form.name.errors }}<br>
         <input type="submit" name="Submit" value="Save">
  </form>
+    Email: {{ user_profile.user.email }}
+    {% if user_profile.is_email_verified %}(Email Verified){% else %}<a href="/profile/resend-email/">Resend Verification Email</a>{% endif %}
 
 </body>
 </html>

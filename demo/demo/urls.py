@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', 'demoapp.views.dashboard'),
     url(r'^profile/$', 'demoapp.views.user_profile'),
     url(r'^logout/$', 'demoapp.views.logout_user'),
+    url(r'^registration/confirm-email/(?P<key>[\w.@+-]+)/$', 'verification.views.email_confirmation'),
+    url(r'^profile/resend-email/$', 'verification.views.resend_email'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
