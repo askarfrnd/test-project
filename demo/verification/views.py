@@ -11,20 +11,18 @@ chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 @login_required()
 def resend_email(request):
-    print "resend mail view"
     print request.user
     try:
         user_profile = UserProfile.objects.get(user=request.user)
     except:
         user_profile = None
-    if user_profile and user_profile.is_email_verified==False:
+    if user_profile and not user_profile.is_email_verified:
         print "email not verified yet"
         try:
             email_verify_object = EmailVerification.objects.get(user=user_profile, entry_valid=True)
         except:
             email_verify_object = None
         if email_verify_object:
-            print "email obj found"
             email_verify_object.entry_valid = False
             email_verify_object.save()
             email_verify_object = EmailVerification()
@@ -38,13 +36,12 @@ def resend_email(request):
             try:
                 from django.contrib.sites.models import Site
                 site = Site.objects.get_current()
-                send_mail('Demo App - Confirm Email', 'Please click here'+str("http://"+str(site.domain)+"registration/confirm-email/"+email_verify_object.verification_key)+'/', 'askar@demoapp.com',
+                send_mail('Demo App - Confirm Email', 'Please click here \n'+str("http://"+str(site.domain)+"/registration/confirm-email/"+email_verify_object.verification_key)+'/', 'askar@demoapp.com',
                                             [user_profile.user.email], fail_silently=False)
-
+                messages.success(request,"Verification mail has been resent.")
             except:
-                pass
+                messages.error(request,"Verification mail not sent. Please try again later.")
 
-            messages.success(request,"Verification mail has been resent.")
         return HttpResponseRedirect('/profile')
     else:
         return HttpResponseRedirect('/dashboard')

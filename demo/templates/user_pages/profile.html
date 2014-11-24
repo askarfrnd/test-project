@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile - {{ user_profile.name }}</title>
-</head>
-<body>
-{{ user_profile.name }}'s Profile<br>
-<a href="/">Dashboard</a>
-<a href="/logout">Logout</a>
+{% extends "common_elements/user_pages/base_skeleton.html" %}
+{% block title %}Profile{% endblock %}
 
+{% block page_content %}
+
+Profile - {{ user_profile.name }}<br>
+<br>
 
  <form action="" method="post"> {% csrf_token %}
-        Name: {{ form.name }}{{ form.name.errors }}<br>
+        Name: {{ form.name }}{{ form.name.errors }}<br><br>
         <input type="submit" name="Submit" value="Save">
  </form>
+    <br>
     Email: {{ user_profile.user.email }}
     {% if user_profile.is_email_verified %}(Email Verified){% else %}<a href="/profile/resend-email/">Resend Verification Email</a>{% endif %}
 
-</body>
-</html>
+{% endblock %}

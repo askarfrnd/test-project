@@ -11,8 +11,8 @@ ADMINS = (
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_USER = "bot@codeyssus.com"
+EMAIL_HOST_PASSWORD = "codeyssusbot"
 EMAIL_PORT = 587
 
 LOGIN_URL = '/login'
@@ -124,7 +124,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'demoapp',
-    'verification'
+    'verification',
+    'notifications',  # Used for email or sms notification. Will be used by celery to send mail/ sms in background.
 )
 
 # A sample logging configuration. The only tangible logging

@@ -107,7 +107,7 @@ def dashboard(request):
     temp_dict = {}
     temp_dict['user_profile'] = user_profile
     return render_to_response(
-        'dashboard.html',
+        'user_pages/dashboard.html',
         temp_dict, context_instance=RequestContext(request))
 
 
@@ -138,5 +138,5 @@ def user_profile(request):
     temp_dict['form'] = form
     temp_dict['user_profile'] = user_profile
     return render_to_response(
-        'profile.html',
+        'user_pages/profile.html',
         temp_dict, context_instance=RequestContext(request))

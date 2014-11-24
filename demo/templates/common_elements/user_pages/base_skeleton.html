@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Demo : {% block title %}{% endblock %} - {{ user_profile.name }}
+    </title>
+    {% block extra_css %}
+
+    {% endblock %}
+</head>
+<body>
+    <h2>Shopping Buddy</h2>
+    <a href="/">Dashboard</a>
+    <a href="/profile">Profile</a>
+    <a href="/logout">Logout</a>
+    <br><br>
+    {% block page_content %}
+
+    {% endblock %}
+</body>
+    {% block extra_js %}
+
+    {% endblock %}
+    {% if messages %}
+        {% for message in messages %}
+          <div class="c-alert alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <p class="text-center">{{ message|safe }}</p>
+          </div>
+        {% endfor %}
+    {% endif %}
+</html>

@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Demo Project</title>
-</head>
-<body>
-<br>
-<a href="/login">Login</a>
-<br><br>
+{% extends "common_elements/base_skeleton.html" %}
+{% block title %} Signup {% endblock %}
+{% block page_content %}
 
-            <b>Signup:</b>
+            <a href="/login">Login</a>
+            <br>
+            <br>
+
+            <h3>Register:</h3>
             <form action="" method="post"> {% csrf_token %}
                     Name: {{ form.name }}{{ form.name.errors }}<br>
                     Email: {{ form.email }}{{ form.email.errors }}<br>
@@ -18,6 +16,4 @@
              </form>
 
             <br>
-
-</body>
-</html>
+{% endblock %}
